@@ -19,7 +19,7 @@ _DB_PATH = r"C:\Users\RMB\Drive\Tsuyoku\QS Data\QuantifedSelf" \
 
 
 class RescueTime():
-    _DB_PATH = '~/git-personal/RubyQS/RubyQS.db'  # SHOULD REALLY GO IN SOME CONFIG FILE
+    _DB_PATH = '/Users/rbloom/git-personal/RubyQS/RubyQS.db'  # SHOULD REALLY GO IN SOME CONFIG FILE
     _URL_API = 'https://www.rescuetime.com/anapi/data'
     _KEY = 'B63EEMx8wEH8uqz6BTIiPxDmE3V6NJAji1uF4vHt'  # should go in keyring
 
