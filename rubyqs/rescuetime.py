@@ -165,7 +165,7 @@ class RescueTime():
 
     def _log2ProdHours(self, df):
         ProdHours = df.groupby(np.sign(df['productivity']))
-        ProdHours = ProdHours.resample('D', how=sum).unstack(level=0)['seconds'] / 3600
+        ProdHours = ProdHours.resample('D').sum().unstack(level=0)['seconds'] / 3600
         ProdHours['Total_Hours'] = ProdHours.sum(axis=1)
         ProdHours.rename(columns={0: 'Neutral', 1: 'Productive',
                                   -1: 'Unproductive'}, inplace=True)
@@ -197,7 +197,7 @@ class RescueTime():
     def _log2WorkTimes(self, df):
 
         df = df[(df['mobile'] == False) & (df['productivity'] == 2)]
-        df = df.resample('60T', how='sum')
+        df = df.resample('60T').sum()
         df = df[df['seconds'] > 20 * 60]
 
         df['date_shifted'] = (pd.Series(df.index)).apply(lambda x: x + timedelta(hours=-5)).values
