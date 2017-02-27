@@ -55,7 +55,7 @@ class RescueTime():
     def get_rescuetime_days(self, start_date=None, end_date=None, df=None, ):
         if df is None:  # guid is primary key and fastest to sort
             df = query("""SELECT * FROM
-                            rescuetime_log
+                            rescuetime
                             ORDER BY guid DESC
                             LIMIT 100000
                             """,
@@ -184,12 +184,12 @@ class RescueTime():
         df.set_index('date_shifted', inplace=True)
 
         Usages = {}
-        Usages['FirstMobile'] = self._resample5(df[df['mobile'] == True]).resample('D', how='min')['date_shifted']
-        Usages['LastMobile'] = self._resample5(df[df['mobile'] == True]).resample('D', how='max')['date_shifted']
-        Usages['FirstLaptop'] = self._resample5(df[df['mobile'] == False]).resample('D', how='min')['date_shifted']
-        Usages['LastLaptop'] = self._resample5(df[df['mobile'] == False]).resample('D', how='max')['date_shifted']
-        Usages['FirstAll'] = self._resample5(df).resample('D', how='min')['date_shifted']
-        Usages['LastAll'] = self._resample5(df).resample('D', how='max')['date_shifted']
+        Usages['FirstMobile'] = self._resample5(df[df['mobile'] == True]).resample('D').min()['date_shifted']
+        Usages['LastMobile'] = self._resample5(df[df['mobile'] == True]).resample('D').max()['date_shifted']
+        Usages['FirstLaptop'] = self._resample5(df[df['mobile'] == False]).resample('D').min()['date_shifted']
+        Usages['LastLaptop'] = self._resample5(df[df['mobile'] == False]).resample('D').max()['date_shifted']
+        Usages['FirstAll'] = self._resample5(df).resample('D').min()['date_shifted']
+        Usages['LastAll'] = self._resample5(df).resample('D').max()['date_shifted']
         Usages = pd.DataFrame(Usages).applymap(lambda x: extract_time(x + timedelta(hours=5)))
 
         return Usages
@@ -204,8 +204,8 @@ class RescueTime():
         df = df.reset_index()
         df.set_index('date_shifted', inplace=True)
 
-        dfstart = df.resample('D', how='min')['localdate'].apply(lambda x: extract_time(x))
-        dfstop = df.resample('D', how='max')['localdate'].apply(lambda x: extract_time(x))
+        dfstart = df.resample('D').min()['localdate'].apply(lambda x: extract_time(x))
+        dfstop = df.resample('D').max()['localdate'].apply(lambda x: extract_time(x))
 
         WorkTimes = pd.DataFrame(data={'FirstWork': dfstart, 'LastWork': dfstop})
         return WorkTimes
